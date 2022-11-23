@@ -6,7 +6,8 @@ export default function Todo() {
   const [todos, setTodos] = useState<ITodo[]>([
     {
       title: "#1 Todo",
-      discription: "string",
+      discription:
+        "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laborum, velit. Vel sit id aliquam impedit voluptates! Accusamus porro quibusdam magni nesciunt maxime, est laboriosam enim ea dolorem numquam",
       complieteDate: JSON.stringify(dayjs(new Date())),
       files: "",
     },
@@ -42,10 +43,10 @@ export default function Todo() {
         {todos &&
           todos.map((t, idx) => (
             <li key={idx} className="todo-list__todo">
-              <h1 className=".todo-list__title">{t.title}</h1>
-              <p className=".todo-list__discription">{t.discription}</p>
-              <p className=".todo-list__date">{t.complieteDate}</p>
-              <img src={t.files} alt={t.files} className=".todo-list__files" />
+              <h1 className="todo-list__title ">{t.title}</h1>
+              <p className="todo-list__discription">{t.discription}</p>
+              <p className="todo-list__date">{t.complieteDate}</p>
+              <img src={t.files} alt={t.files} className="todo-list__files" />
             </li>
           ))}
       </ul>
