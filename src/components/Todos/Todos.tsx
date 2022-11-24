@@ -43,10 +43,15 @@ export default function Todo() {
         {todos &&
           todos.map((t, idx) => (
             <li key={idx} className="todo-list__todo">
-              <h1 className="todo-list__title ">{t.title}</h1>
-              <p className="todo-list__discription">{t.discription}</p>
-              <p className="todo-list__date">{t.complieteDate}</p>
-              <img src={t.files} alt={t.files} className="todo-list__files" />
+              <div className="todo-list__data-container">
+                <h1 className="todo-list__title ">{t.title}</h1>
+                <p className="todo-list__discription">{t.discription}</p>
+                <p className="todo-list__date">{t.complieteDate}</p>
+                <img src={t.files} alt={t.files} className="todo-list__files" />
+              </div>
+              <div className="todo-list__button-container">
+                <button className="todo-list__button buttons"></button>
+              </div>
             </li>
           ))}
       </ul>

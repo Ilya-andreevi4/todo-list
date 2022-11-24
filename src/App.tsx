@@ -11,17 +11,17 @@ function App() {
         <h2 className="header__title">ToDo App</h2>
         {!user ? (
           <div>
-            <button className="header__buttons header__buttons__log">
+            <button className="header__buttons header__buttons__log buttons">
               Войти
             </button>
-            <button className="header__buttons header__buttons__reg">
+            <button className="header__buttons header__buttons__reg buttons">
               Регистрация
             </button>
           </div>
         ) : (
           <button
             onClick={logOut}
-            className="header__buttons header__buttons__logout"
+            className="header__buttons header__buttons__logout buttons"
           >
             Выйти из {user.email}
           </button>
