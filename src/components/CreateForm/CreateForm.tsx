@@ -38,7 +38,7 @@ export default function CreateForm() {
       <input
         className="form__button buttons"
         type="submit"
-        value="Отправить"
+        value="СОЗДАТЬ ЗАДАЧУ"
       ></input>
     </form>
   );
