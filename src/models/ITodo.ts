@@ -1,6 +1,6 @@
 export default interface ITodo {
   title: string;
-  discription: string;
+  description: string;
   complieteDate: string;
   files: string;
 }

@@ -1,13 +1,21 @@
+import ITodo from "models/ITodo";
 import { useState } from "react";
+import { addTodo } from "services/todo-services";
 import "./create-form.less";
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState(JSON.stringify(new Date().toISOString()));
   const [file, setFile] = useState("");
-  const handleSubmit = () => {
-    alert("submit!");
-    return false;
+  const handleSubmit = async () => {
+    const newTodo: ITodo = {
+      title,
+      description,
+      complieteDate: date,
+      files: file,
+    };
+    await addTodo(newTodo, "test");
   };
   return (
     <form onSubmit={() => handleSubmit()} className="form">
@@ -35,6 +43,13 @@ export default function CreateForm() {
         onChange={(e) => setFile(e.target.value)}
         value={file}
       />
+      <input
+        type="datetime-local"
+        className="form__date"
+        name="compliete-task-time"
+        onChange={(e) => setDate(e.target.value)}
+        value={date}
+      ></input>
       <input
         className="form__button buttons"
         type="submit"

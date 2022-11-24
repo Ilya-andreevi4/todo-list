@@ -18,14 +18,16 @@ export function UserAuthContextProvider({ children }: any) {
   const signUp = async (email: any, password: any) => {
     return (
       await createUserWithEmailAndPassword(auth, email, password)
-        .then(async (credentials) => {
+        .then((credentials) => {
+          console.log(credentials);
+
           const usersCollectionRef = collection(db, "users/");
           const newUser = {
             uid: "",
             timestamp: Date.now(),
             email: email,
           };
-          await addDoc(usersCollectionRef, newUser)
+          addDoc(usersCollectionRef, newUser)
             .then((d) => {
               return setDoc(
                 doc(db, "users/", d.id),
@@ -54,7 +56,8 @@ export function UserAuthContextProvider({ children }: any) {
   };
   function logIn(email: any, password: any) {
     return signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((credentials) => {
+        console.log(credentials);
         console.log("Profile update!");
       })
       .catch((e) => console.error(e));
@@ -71,11 +74,12 @@ export function UserAuthContextProvider({ children }: any) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      // localStorage.setItem("user", JSON.stringify(currentUser));
     });
     return () => {
       unsubscribe();
     };
-  }, [auth.currentUser]);
+  }, [auth]);
 
   const values = useMemo(
     () => ({

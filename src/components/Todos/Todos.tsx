@@ -1,9 +1,12 @@
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import ITodo from "../../models/ITodo";
+import { useUserAuth } from "services/providers/AuthProvider";
+import { getAllTodos } from "services/todo-services";
+// import ITodo from "../../models/ITodo";
 
 export default function Todo() {
-  const [todos, setTodos] = useState<ITodo[]>([
+  const { user } = useUserAuth();
+  const [todos, setTodos] = useState<any>([
     {
       title: "#1 Todo",
       discription:
@@ -24,28 +27,34 @@ export default function Todo() {
       files: "",
     },
   ]);
+  const getTodos = async () => {
+    try {
+      const todos: any = await getAllTodos();
+      if (todos.docs) {
+        setTodos(
+          todos.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as any))
+        );
+      } else {
+        return;
+      }
+    } catch (e: any) {
+      console.error(e.message);
+    }
+  };
 
   useEffect(() => {
-    setTodos([
-      ...todos,
-      {
-        title: "Another one Todo",
-        discription: "another one string",
-        complieteDate: JSON.stringify(dayjs(new Date())),
-        files: "",
-      },
-    ]);
-  }, []);
+    getTodos();
+  }, [user]);
 
   return (
     <>
       <ul className="todo-list">
         {todos &&
-          todos.map((t, idx) => (
+          todos.map((t: any, idx: number) => (
             <li key={idx} className="todo-list__todo">
               <div className="todo-list__data-container">
                 <h1 className="todo-list__title ">{t.title}</h1>
-                <p className="todo-list__discription">{t.discription}</p>
+                <p className="todo-list__discription">{t.description}</p>
                 <p className="todo-list__date">{t.complieteDate}</p>
                 <img src={t.files} alt={t.files} className="todo-list__files" />
               </div>

@@ -3,11 +3,21 @@ import { useState } from "react";
 import CreateForm from "./components/CreateForm/CreateForm";
 import Todos from "./components/Todos/Todos";
 import { useUserAuth } from "./services/providers/AuthProvider";
+import { useEffect } from "react";
 
 function App() {
   const { user, logOut } = useUserAuth();
   const [openEntryForm, setOpenEntryForm] = useState(false);
   const [typeEntry, setTypeEntry] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
+
   return (
     <>
       <header className="header">
