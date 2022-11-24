@@ -26,14 +26,6 @@ body {
     margin: 0.5rem 0.5rem;
   }
   &__buttons {
-    letter-spacing: 2px;
-    font-weight: 700;
-    appearance: none;
-    border: 0;
-    border-radius: 5px;
-    padding: 8px 12px;
-    margin: 1rem 0.5rem;
-    font-size: 18px;
     &__reg {
       background: blue;
       color: #fff;
@@ -46,15 +38,32 @@ body {
       background: crimson;
       color: #fff;
     }
-    &:hover {
-      scale: 1.05;
-      cursor: pointer;
-      filter: brightness(1.1);
-    }
-    &:active {
-      scale: 1;
-      filter: brightness(0.9);
-    }
+  }
+}
+
+.buttons {
+  letter-spacing: 2px;
+  font-weight: 700;
+  appearance: none;
+  border: 0;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin: 1rem 0.5rem;
+  font-size: 18px;
+  transition: scale 0.5s, filter 0.5s;
+  -o-transition: scale 0.5s, filter 0.5s;
+  -webkit-transition: scale 0.5s, filter 0.5s;
+  -moz-transition: scale 0.5s, filter 0.5s;
+  &:hover {
+    scale: 1.03;
+    cursor: pointer;
+    filter: brightness(1.1);
+    -webkit-filter: brightness(1.1);
+  }
+  &:active {
+    scale: 0.9;
+    filter: brightness(0.9);
+    -webkit-filter: brightness(0.9);
   }
 }
 
