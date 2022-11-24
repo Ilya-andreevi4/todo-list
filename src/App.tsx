@@ -12,7 +12,14 @@ function App() {
     <>
       <header className="header">
         <h2 className="header__title">ToDo App</h2>
-        {!user ? (
+        {user ? (
+          <button
+            onClick={() => logOut()}
+            className="header__buttons header__buttons__logout buttons"
+          >
+            Выйти из {user?.email}
+          </button>
+        ) : (
           <div>
             <button
               onClick={() => {
@@ -33,13 +40,6 @@ function App() {
               Регистрация
             </button>
           </div>
-        ) : (
-          <button
-            onClick={() => logOut()}
-            className="header__buttons header__buttons__logout buttons"
-          >
-            Выйти из {user.email}
-          </button>
         )}
       </header>
       <div className="app">

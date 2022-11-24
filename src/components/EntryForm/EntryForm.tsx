@@ -17,16 +17,12 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
         await signUp(email, password);
       } catch (err: any) {
         console.error(err.message);
-      } finally {
-        setOpen(false);
       }
     } else {
       try {
         await logIn(email, password);
       } catch (err: any) {
         console.error(err.message);
-      } finally {
-        setOpen(false);
       }
     }
   };

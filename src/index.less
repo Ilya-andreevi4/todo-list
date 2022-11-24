@@ -11,9 +11,11 @@ body {
   position: relative;
   top: 0;
   left: 0;
+  min-width: max-content;
   width: 100%;
   height: max-content;
   background: #eee;
+  white-space: nowrap;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -42,12 +44,12 @@ body {
 }
 
 .buttons {
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   font-weight: 700;
   appearance: none;
   border: 0;
   border-radius: 5px;
-  padding: 8px 12px;
+  padding: 6px 8px;
   margin: 1rem 0.5rem;
   font-size: 18px;
   transition: scale 0.5s, filter 0.5s;

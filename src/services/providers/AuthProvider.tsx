@@ -13,19 +13,19 @@ import { auth, db } from "../../firebase";
 const userAuthContext = createContext({} as any);
 
 export function UserAuthContextProvider({ children }: any) {
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<IUser | null>(auth.currentUser);
 
   const signUp = async (email: any, password: any) => {
     return (
       await createUserWithEmailAndPassword(auth, email, password)
-        .then((user) => {
+        .then(async (credentials) => {
           const usersCollectionRef = collection(db, "users/");
           const newUser = {
             uid: "",
             timestamp: Date.now(),
             email: email,
           };
-          return addDoc(usersCollectionRef, newUser)
+          await addDoc(usersCollectionRef, newUser)
             .then((d) => {
               return setDoc(
                 doc(db, "users/", d.id),
@@ -53,11 +53,19 @@ export function UserAuthContextProvider({ children }: any) {
     );
   };
   function logIn(email: any, password: any) {
-    return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        console.log("Profile update!");
+      })
+      .catch((e) => console.error(e));
   }
 
   function logOut() {
-    return signOut(auth);
+    return signOut(auth)
+      .then(() => {
+        console.log("Profile update!");
+      })
+      .catch((e) => console.error(e));
   }
 
   useEffect(() => {
@@ -67,7 +75,7 @@ export function UserAuthContextProvider({ children }: any) {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [auth.currentUser]);
 
   const values = useMemo(
     () => ({
