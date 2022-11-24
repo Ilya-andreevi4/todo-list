@@ -35,7 +35,7 @@ function App() {
           </div>
         ) : (
           <button
-            onClick={logOut}
+            onClick={() => logOut()}
             className="header__buttons header__buttons__logout buttons"
           >
             Выйти из {user.email}

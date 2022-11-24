@@ -1,4 +1,5 @@
 import { useState, FC } from "react";
+import { useUserAuth } from "../../services/providers/AuthProvider";
 import "./entry-form.less";
 
 export interface EntryFormProps {
@@ -9,9 +10,25 @@ export interface EntryFormProps {
 const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleSubmit = () => {
-    alert("submit!");
-    return false;
+  const { signUp, logIn } = useUserAuth();
+  const handleSubmit = async () => {
+    if (type === "reg") {
+      try {
+        await signUp(email, password);
+      } catch (err: any) {
+        console.error(err.message);
+      } finally {
+        setOpen(false);
+      }
+    } else {
+      try {
+        await logIn(email, password);
+      } catch (err: any) {
+        console.error(err.message);
+      } finally {
+        setOpen(false);
+      }
+    }
   };
   return (
     <div

@@ -48,9 +48,8 @@
 .todo-list__button {
   appearance: none;
   background: orange;
-  border: 3px solid purple;
+  border: 3px solid purple !important;
   margin-bottom: 1rem;
   height: 40px;
   width: 40px;
-  border-radius: 50%;
 }
