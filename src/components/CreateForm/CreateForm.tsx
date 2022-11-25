@@ -17,57 +17,76 @@ export default function CreateForm() {
 
   const handleSubmit = async () => {
     try {
-      const userUid = user?.uid + dayjs(new Date()).format("DD/MM/YYYY");
-      const storageRef = ref(storage, userUid);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        () => {},
-        // (snapshot) => {
-        //   const progress =
-        //     (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        //   console.log("Upload is " + progress + "% done");
-        //   switch (snapshot.state) {
-        //     case "paused":
-        //       console.log("Upload is paused");
-        //       break;
-        //     case "running":
-        //       console.log("Upload is running");
-        //       break;
-        //   }
-        // },
-        (error) => {
-          console.error(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            const newTodo: ITodo = {
-              title,
-              description,
-              complieteDate: date,
-              files: downloadURL,
-              createDate: new Date(),
-              isCompliete: false,
-            };
-            const userDoc = collection(db, "users/" + user?.uid + "/todos");
-            await addDoc(userDoc, newTodo).catch((error) => {
-              console.error(error.message);
-            });
-          });
-        }
-      );
+      const userUid =
+        user?.uid + dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss");
+      if (file) {
+        const storageRef = ref(storage, userUid);
+
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        uploadTask.on(
+          "state_changed",
+          () => {},
+          // (snapshot) => {
+          //   const progress =
+          //     (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          //   console.log("Upload is " + progress + "% done");
+          //   switch (snapshot.state) {
+          //     case "paused":
+          //       console.log("Upload is paused");
+          //       break;
+          //     case "running":
+          //       console.log("Upload is running");
+          //       break;
+          //   }
+          // },
+          (error) => {
+            console.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                const newTodo: ITodo = {
+                  title,
+                  description,
+                  complieteDate: date,
+                  files: downloadURL,
+                  createDate: new Date(),
+                  isCompliete: false,
+                };
+                const userDoc = collection(db, "users/" + user?.uid + "/todos");
+                await addDoc(userDoc, newTodo).catch((error) => {
+                  console.error(error.message);
+                });
+              }
+            );
+          }
+        );
+      } else {
+        const newTodo: ITodo = {
+          title,
+          description,
+          complieteDate: date,
+          files: file,
+          createDate: new Date(),
+          isCompliete: false,
+        };
+        const userDoc = collection(db, "users/" + user?.uid + "/todos");
+        await addDoc(userDoc, newTodo).catch((error) => {
+          console.error(error.message);
+        });
+      }
     } catch (e) {
       console.error(e);
     }
   };
-  useEffect(() => {
-    if (auth.currentUser) {
-      setUser(auth.currentUser);
-    } else if (localStorage.getItem("user")) {
-      const isUser = localStorage.getItem("user");
-      isUser && setUser(JSON.parse(isUser));
-    } else return;
-  }, []);
+  // useEffect(() => {
+  //   if (auth.currentUser) {
+  //     setUser(auth.currentUser);
+  //   } else if (localStorage.getItem("user")) {
+  //     const isUser = localStorage.getItem("user");
+  //     isUser && setUser(JSON.parse(isUser));
+  //   } else return;
+  // }, []);
 
   return (
     <form onSubmit={() => handleSubmit()} className="form">

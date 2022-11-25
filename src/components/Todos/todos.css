@@ -23,10 +23,10 @@
   flex-direction: column;
   grid-template-columns: repeat(1, 1fr);
   grid-auto-rows: 60px;
-  transition: transform 0.5s;
+  transition: box-shadow 0.5s;
 }
 .todo-list__todo:hover {
-  transform: translate(-2px, -2px);
+  box-shadow: inset 1px 1px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 .todo-list__title {
