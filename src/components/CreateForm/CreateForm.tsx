@@ -1,7 +1,12 @@
+import { db } from "../../firebase";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 import ITodo from "models/ITodo";
 import { useState } from "react";
-import { addTodo } from "services/todo-services";
+// import { addTodo } from "services/todo-services";
 import "./create-form.less";
+import { auth, storage } from "../../firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
@@ -14,8 +19,41 @@ export default function CreateForm() {
       description,
       complieteDate: date,
       files: file,
+      createDate: new Date(),
+      isCompliete: false,
     };
-    await addTodo(newTodo, "test");
+    try {
+      //
+      const userName = auth.currentUser?.uid
+      const storageRef = ref(storage, userName);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      (error) => {
+        console.error(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+          await updateDoc(, {
+            displayName: userName,
+            photoURL: downloadURL,
+          });
+        });
+      }
+    );
+//
+      const userDoc = collection(db, "users/test/todos");
+      console.log(userDoc);
+      await addDoc(userDoc, newTodo).catch((error) => {
+        var errorMessage = error.message;
+        console.error(errorMessage);
+      });
+
+      // addTodo(newTodo, "test")
+      //     .then(() => console.log("задача создана"))
+      //     .catch((e) => console.error("Error with create task: ", e));
+    } catch (e) {
+      console.error(e);
+    }
   };
   return (
     <form onSubmit={() => handleSubmit()} className="form">
@@ -38,14 +76,19 @@ export default function CreateForm() {
       <h2 className="form__title">Дополнительные файлы</h2>
       <input
         type="file"
-        className="form__file"
-        aria-label="Дополнительные файлы"
+        id="avatar"
+        className="entry-form__file-input input"
+        aria-label="Аватар"
         onChange={(e) => setFile(e.target.value)}
         value={file}
       />
+      <label htmlFor="avatar" className="input__label">
+        <img src="./image.png" alt="img" /> <span>Выбрать файл</span>
+      </label>
+      <h2 className="form__title">Дата завершения задачи</h2>
       <input
         type="datetime-local"
-        className="form__date"
+        className="form__date input"
         name="compliete-task-time"
         onChange={(e) => setDate(e.target.value)}
         value={date}

@@ -1,8 +1,10 @@
 import dayjs from "dayjs";
+import { db } from "../../firebase";
+import { collection, getDocs } from "firebase/firestore";
+import ITodo from "models/ITodo";
 import { useState, useEffect } from "react";
-import { useUserAuth } from "services/providers/AuthProvider";
-import { getAllTodos } from "services/todo-services";
-// import ITodo from "../../models/ITodo";
+import { useUserAuth } from "../../services/providers/AuthProvider";
+// import { getAllTodos } from "services/todo-services";
 
 export default function Todo() {
   const { user } = useUserAuth();
@@ -13,28 +15,43 @@ export default function Todo() {
         "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laborum, velit. Vel sit id aliquam impedit voluptates! Accusamus porro quibusdam magni nesciunt maxime, est laboriosam enim ea dolorem numquam",
       complieteDate: JSON.stringify(dayjs(new Date())),
       files: "",
+      isCompliete: false,
     },
     {
       title: "#2 Todo",
       discription: "string2",
       complieteDate: JSON.stringify(dayjs(new Date())),
       files: "",
+      isCompliete: true,
     },
     {
       title: "#3 Todo",
       discription: "string3",
       complieteDate: JSON.stringify(dayjs(new Date())),
       files: "",
+      isCompliete: true,
     },
   ]);
   const getTodos = async () => {
     try {
-      const todos: any = await getAllTodos();
-      if (todos.docs) {
+      const todosCollectionRef = collection(db, "users/test/todos");
+      const todos = await getDocs(todosCollectionRef).catch((error) => {
+        var errorMessage = error.message;
+        console.error(errorMessage);
+      });
+      // const todos: any = await getAllTodos();
+      console.log("Todos render!");
+
+      if (todos) {
         setTodos(
-          todos.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as any))
+          todos.docs
+            .map((doc: any) => ({ ...doc.data(), id: doc.id } as any))
+            .sort((a: ITodo, b: ITodo) =>
+              a.createDate > b.createDate ? 1 : -1
+            )
         );
       } else {
+        console.log("Не получилось загрузить задачи...");
         return;
       }
     } catch (e: any) {

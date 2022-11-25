@@ -1,6 +1,11 @@
 import { useState, FC } from "react";
-import { useUserAuth } from "../../services/providers/AuthProvider";
 import "./entry-form.less";
+
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../../firebase";
 
 export interface EntryFormProps {
   open: boolean;
@@ -10,29 +15,47 @@ export interface EntryFormProps {
 const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signUp, logIn } = useUserAuth();
-  const handleSubmit = async () => {
+  const [err, setErr] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (type === "reg") {
       try {
-        await signUp(email, password);
+        await createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            console.log(userCredential);
+            setOpen(false);
+          })
+          .catch((e) => {
+            setErr(true);
+            console.error(e.message);
+          });
       } catch (err: any) {
+        setErr(true);
         console.error(err.message);
       }
     } else {
       try {
-        await logIn(email, password);
-      } catch (err: any) {
-        console.error(err.message);
+        await signInWithEmailAndPassword(auth, email, password).then(
+          (credentials) => {
+            console.log(credentials);
+            console.log("Profile update!");
+            setOpen(false);
+          }
+        );
+      } catch (e) {
+        console.error(e);
       }
     }
   };
+
   return (
     <div
       className={open ? "entry-form" : "entry-form__closed"}
       onClick={() => setOpen(false)}
     >
       <form
-        onSubmit={() => handleSubmit()}
+        onSubmit={(e) => handleSubmit(e)}
         className="entry-form__box"
         onClick={(e) => e.stopPropagation()}
       >
@@ -62,6 +85,7 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
           type="submit"
           value={type === "reg" ? "Создать аккаунт" : "Войти"}
         ></input>
+        {err && <h2>Что-то пошло не так...</h2>}
       </form>
     </div>
   );

@@ -9,11 +9,11 @@ import {
 } from "firebase/firestore";
 import ITodo from "models/ITodo";
 
-export const addTodo = (newTodo: ITodo, userId: string) => {
+export const addTodo = async (newTodo: ITodo, userId: string) => {
   if (userId) {
     const userDoc = collection(db, "users/" + userId + "/todos");
     console.log(userDoc);
-    addDoc(userDoc, newTodo).catch((error) => {
+    await addDoc(userDoc, newTodo).catch((error) => {
       var errorMessage = error.message;
       console.error(errorMessage);
     });

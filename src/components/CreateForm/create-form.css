@@ -21,6 +21,11 @@
   color: #fff;
   border: none;
 }
+.form__date {
+  height: 32px;
+  max-width: 300px;
+  padding: 0.5rem 1rem;
+}
 .form__button {
   appearance: none;
   margin-bottom: 1.5rem;
@@ -41,4 +46,13 @@
   border: none;
   border-radius: 8px;
   width: 100%;
+}
+.input__label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: large;
+}
+.input__label img {
+  height: 60px;
 }

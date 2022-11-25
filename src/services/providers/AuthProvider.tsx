@@ -13,7 +13,7 @@ import { auth, db } from "../../firebase";
 const userAuthContext = createContext({} as any);
 
 export function UserAuthContextProvider({ children }: any) {
-  const [user, setUser] = useState<IUser | null>(auth.currentUser);
+  const [user, setUser] = useState<IUser | null>(null);
 
   const signUp = async (email: any, password: any) => {
     return (
@@ -64,22 +64,20 @@ export function UserAuthContextProvider({ children }: any) {
   }
 
   function logOut() {
-    return signOut(auth)
-      .then(() => {
-        console.log("Profile update!");
-      })
-      .catch((e) => console.error(e));
+    return signOut(auth).catch((e) => console.error(e));
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      console.log(currentUser);
+
       // localStorage.setItem("user", JSON.stringify(currentUser));
     });
     return () => {
       unsubscribe();
     };
-  }, [auth]);
+  }, []);
 
   const values = useMemo(
     () => ({
