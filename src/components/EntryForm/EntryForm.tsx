@@ -22,8 +22,9 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
     if (type === "reg") {
       try {
         await createUserWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            console.log(userCredential);
+          .then((credentials) => {
+            console.log(credentials);
+            localStorage.setItem("user", JSON.stringify(credentials.user));
             setOpen(false);
           })
           .catch((e) => {
@@ -40,6 +41,7 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
           (credentials) => {
             console.log(credentials);
             console.log("Profile update!");
+            localStorage.setItem("user", JSON.stringify(credentials.user));
             setOpen(false);
           }
         );

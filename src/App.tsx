@@ -4,17 +4,23 @@ import CreateForm from "./components/CreateForm/CreateForm";
 import Todos from "./components/Todos/Todos";
 import { useUserAuth } from "./services/providers/AuthProvider";
 import { useEffect } from "react";
+import { IUser } from "models/IUser";
 
 function App() {
   const { user, logOut } = useUserAuth();
   const [openEntryForm, setOpenEntryForm] = useState(false);
   const [typeEntry, setTypeEntry] = useState("");
+  const [localUser, setLocalUser] = useState<IUser | null>(null);
 
   useEffect(() => {
     if (user) {
+      setLocalUser(user);
       localStorage.setItem("user", JSON.stringify(user));
+    } else if (localStorage.getItem("user")) {
+      const user = localStorage.getItem("user");
+      user && setLocalUser(JSON.parse(user));
     } else {
-      localStorage.removeItem("user");
+      setLocalUser(null);
     }
   }, [user]);
 
@@ -22,12 +28,12 @@ function App() {
     <>
       <header className="header">
         <h2 className="header__title">ToDo App</h2>
-        {user ? (
+        {localUser ? (
           <button
             onClick={() => logOut()}
             className="header__buttons header__buttons__logout buttons"
           >
-            Выйти из {user?.email}
+            Выйти из {localUser.email}
           </button>
         ) : (
           <div>

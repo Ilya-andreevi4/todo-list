@@ -3,6 +3,6 @@ export default interface ITodo {
   description: string;
   createDate: any;
   complieteDate: any;
-  files: string;
+  files: any;
   isCompliete: boolean;
 }

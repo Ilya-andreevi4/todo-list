@@ -3,6 +3,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: lightcyan;
 }
 .header {
   position: relative;
@@ -66,8 +67,10 @@ body {
   margin: 1rem auto;
   width: 80%;
   min-width: 380px;
+  max-width: 860px;
   height: fit-content;
   background: #eee;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
