@@ -9,14 +9,14 @@
   position: relative;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 1rem;
 }
 .todo-list__todo {
   width: 100%;
   height: max-content;
+  margin-top: 1rem;
   padding: 0 1rem;
   background: white;
-  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.2);
   color: darkblue;
   word-wrap: break-word;
   display: grid;
@@ -26,7 +26,11 @@
   transition: box-shadow 0.5s;
 }
 .todo-list__todo:hover {
-  box-shadow: inset 1px 1px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.todo-list__todo:active {
+  box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
 .todo-list__title {

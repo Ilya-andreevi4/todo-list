@@ -24,7 +24,6 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
         await createUserWithEmailAndPassword(auth, email, password)
           .then((credentials) => {
             console.log(credentials);
-            localStorage.setItem("user", JSON.stringify(credentials.user));
             setOpen(false);
           })
           .catch((e) => {
@@ -40,8 +39,6 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
         await signInWithEmailAndPassword(auth, email, password).then(
           (credentials) => {
             console.log(credentials);
-            console.log("Profile update!");
-            localStorage.setItem("user", JSON.stringify(credentials.user));
             setOpen(false);
           }
         );

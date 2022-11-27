@@ -1,95 +1,121 @@
 import { db } from "../../firebase";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import ITodo from "models/ITodo";
-import { useEffect, useState } from "react";
-import "./create-form.less";
+import { addDoc, collection } from "firebase/firestore";
 import { auth, storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import ITodo from "models/ITodo";
+import { useState } from "react";
 import dayjs from "dayjs";
-import { IUser } from "models/IUser";
+import "./create-form.less";
+import { v4 as uuid } from "uuid";
+import { useAppContext } from "services/providers/AuthProvider";
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState<any>("");
+  const [file, setFile] = useState<any>(null);
   const [date, setDate] = useState("");
-  const [user, setUser] = useState<IUser | null>(auth.currentUser);
+  const { user } = useAppContext();
 
   const handleSubmit = async () => {
-    try {
-      const userUid =
-        user?.uid + dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss");
-      if (file) {
-        const storageRef = ref(storage, userUid);
+    console.log("file: ");
+    console.log(file);
+    const userUid =
+      (user ? user.uid : "test") +
+      dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss");
+    // if (file) {
+    //   const storageRef = ref(storage, userUid);
 
-        const uploadTask = uploadBytesResumable(storageRef, file);
-        uploadTask.on(
-          "state_changed",
-          () => {},
-          // (snapshot) => {
-          //   const progress =
-          //     (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          //   console.log("Upload is " + progress + "% done");
-          //   switch (snapshot.state) {
-          //     case "paused":
-          //       console.log("Upload is paused");
-          //       break;
-          //     case "running":
-          //       console.log("Upload is running");
-          //       break;
-          //   }
-          // },
-          (error) => {
-            console.error(error);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(
-              async (downloadURL) => {
-                const newTodo: ITodo = {
-                  title,
-                  description,
-                  complieteDate: date,
-                  files: downloadURL,
-                  createDate: new Date(),
-                  isCompliete: false,
-                };
-                const userDoc = collection(db, "users/" + user?.uid + "/todos");
-                await addDoc(userDoc, newTodo).catch((error) => {
-                  console.error(error.message);
-                });
-              }
-            );
-          }
-        );
-      } else {
-        const newTodo: ITodo = {
-          title,
-          description,
-          complieteDate: date,
-          files: file,
-          createDate: new Date(),
-          isCompliete: false,
-        };
-        const userDoc = collection(db, "users/" + user?.uid + "/todos");
-        await addDoc(userDoc, newTodo).catch((error) => {
-          console.error(error.message);
-        });
-      }
-    } catch (e) {
-      console.error(e);
-    }
+    //   const uploadTask = uploadBytesResumable(storageRef, file);
+    //   uploadTask.on(
+    //     "state_changed",
+    //     (snapshot) => {
+    //       const progress =
+    //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //       console.log("Upload is " + progress + "% done");
+    //       switch (snapshot.state) {
+    //         case "paused":
+    //           console.log("Upload is paused");
+    //           break;
+    //         case "running":
+    //           console.log("Upload is running");
+    //           break;
+    //       }
+    //     },
+    //     (error) => {
+    //       console.error(error);
+    //     },
+    //     () => {
+    //       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+    //         console.log("загрузка файла завершилась");
+
+    //         const newTodo: ITodo = {
+    //           id: uuid(),
+    //           title,
+    //           description,
+    //           complieteDate: date,
+    //           files: downloadURL,
+    //           createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
+    //           isCompliete: false,
+    //         };
+
+    //         // With collection:
+
+    //         const userDoc = collection(
+    //           db,
+    //           "users/" +
+    //             (auth.currentUser ? auth.currentUser.uid : "test") +
+    //             "/todos"
+    //         );
+    //         await addDoc(userDoc, newTodo).catch((error) => {
+    //           console.error("Error with upload todo " + error);
+    //         });
+
+    //         // With document:
+
+    //         // const userDoc = doc(db, "users/", user ? user.uid : "test");
+    //         // await updateDoc(userDoc, {
+    //         //   todos: arrayUnion(newTodo),
+    //         // }).catch((error) => {
+    //         //   console.error("Error with upload todo " + error);
+    //         // });
+    //       });
+    //     }
+    //   );
+    // } else {
+    const newTodo: ITodo = {
+      id: uuid(),
+      title,
+      description,
+      complieteDate: date,
+      files: file,
+      createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
+      isCompliete: false,
+    };
+
+    // With collection:
+
+    const userDoc = collection(
+      db,
+      "users/" + (auth.currentUser ? auth.currentUser.uid : "test") + "/todos"
+    );
+    await addDoc(userDoc, newTodo).catch((error) => {
+      console.error("Error with upload todo " + error);
+    });
+
+    // With document:
+
+    // const userDoc = doc(db, "users/", user ? user.uid : "test");
+    // console.log("загрузка началась");
+    // await updateDoc(userDoc, {
+    //   todos: arrayUnion(newTodo),
+    // }).catch((error) => {
+    //   console.error("Error with upload todo " + error);
+    // });
+    // }
   };
-  // useEffect(() => {
-  //   if (auth.currentUser) {
-  //     setUser(auth.currentUser);
-  //   } else if (localStorage.getItem("user")) {
-  //     const isUser = localStorage.getItem("user");
-  //     isUser && setUser(JSON.parse(isUser));
-  //   } else return;
-  // }, []);
 
   return (
-    <form onSubmit={() => handleSubmit()} className="form">
+    <form onSubmit={handleSubmit} className="form">
       <h2 className="form__title">Заголовок задачи</h2>
       <input
         type="text"
@@ -118,13 +144,12 @@ export default function CreateForm() {
       />
       <label htmlFor="avatar" className="input__label">
         <img src="./image.png" alt="img" />{" "}
-        {file ? <span>{JSON.stringify(file)}</span> : <span>Выбрать файл</span>}
+        {file ? <span>Файл выбран</span> : <span>Выбрать файл</span>}
       </label>
       <h2 className="form__title">Дата завершения задачи</h2>
       <input
         type="datetime-local"
         className="form__date input"
-        name="compliete-task-time"
         min={dayjs(new Date()).format("YYYY-MM-DDTHH:mm")}
         onChange={(e) => setDate(e.target.value)}
         value={date}

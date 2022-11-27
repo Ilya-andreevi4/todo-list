@@ -1,25 +1,37 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { IUser } from "../../models/IUser";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 
-const userAuthContext = createContext({} as any);
+export const appContext = createContext({} as any);
 
-export function UserAuthContextProvider({ children }: any) {
+export function AppContextProvider({ children }: any) {
   const [user, setUser] = useState<IUser | null>(null);
+  const [todos, setTodos] = useState<any>(null);
 
   const logOut = async () => {
-    return await signOut(auth)
-      .then(() => {
-        localStorage.removeItem("user");
-      })
-      .catch((e) => console.error("error with log out" + e));
+    return await signOut(auth).catch((e) =>
+      console.error("error with log out" + e)
+    );
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
+    const unsubscribe = () => {
+      onAuthStateChanged(auth, (user) => {
+        setUser(user);
+      });
+      onSnapshot(
+        collection(db, "users/" + (user ? user.uid : "test"), "todos"),
+        (doc) => {
+          const userDoc = doc.docs;
+
+          const userTodos = userDoc && userDoc.map((d) => d.data());
+
+          setTodos(userTodos);
+        }
+      );
+    };
     return () => {
       unsubscribe();
     };
@@ -29,17 +41,14 @@ export function UserAuthContextProvider({ children }: any) {
     () => ({
       logOut,
       user,
+      todos,
     }),
-    [user]
+    [user, todos]
   );
 
-  return (
-    <userAuthContext.Provider value={values}>
-      {children}
-    </userAuthContext.Provider>
-  );
+  return <appContext.Provider value={values}>{children}</appContext.Provider>;
 }
 
-export function useUserAuth() {
-  return useContext(userAuthContext);
+export function useAppContext() {
+  return useContext(appContext);
 }

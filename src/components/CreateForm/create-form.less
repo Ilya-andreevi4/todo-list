@@ -10,10 +10,10 @@
     font-size: 22px;
     font-weight: 500;
     letter-spacing: 1px;
+    line-height: 1rem;
   }
   &__file {
     appearance: none;
-    margin-bottom: 1rem;
     line-height: 1rem;
     font-size: 22px;
     font-weight: 500;
@@ -28,7 +28,7 @@
   }
   &__button {
     appearance: none;
-    margin-bottom: 1.5rem;
+    min-height: 36px;
     line-height: 2.5rem;
     font-size: 20px;
     font-weight: 600;
@@ -42,18 +42,23 @@
 .input {
   appearance: none;
   line-height: 2.5rem;
-  font-size: 24px;
+  margin-bottom: 1rem;
+  font-size: 20px;
   background: white;
   border: none;
   border-radius: 8px;
   width: 100%;
   &__label {
+    background: rgb(114, 39, 183);
+    width: max-content;
+    padding: 0px 1rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: large;
     img {
       height: 60px;
     }
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: large;
   }
 }

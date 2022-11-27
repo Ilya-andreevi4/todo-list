@@ -1,11 +1,11 @@
 import { db } from "../firebase";
 import {
   collection,
-  getDocs,
   getDoc,
   addDoc,
   doc,
   deleteDoc,
+  getDocs,
 } from "firebase/firestore";
 import ITodo from "models/ITodo";
 
@@ -31,13 +31,13 @@ export const deleteTodo = (id: any, uid: string) => {
 };
 
 export const getAllTodos = async (userId?: string) => {
-  //   if (userId) {
-  const todosCollectionRef = collection(db, "users/test/todos");
-  return await getDocs(todosCollectionRef).catch((error) => {
-    var errorMessage = error.message;
-    console.error(errorMessage);
-  });
-  //   }
+  if (userId) {
+    const todosCollectionRef = collection(db, "users/test/todos");
+    return await getDocs(todosCollectionRef).catch((error) => {
+      var errorMessage = error.message;
+      console.error(errorMessage);
+    });
+  }
 };
 
 export const getTodo = (id: any, uid: string) => {
