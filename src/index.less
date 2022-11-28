@@ -15,7 +15,7 @@ body {
   min-width: max-content;
   width: 100%;
   height: max-content;
-  background: #eee;
+  background: #fff;
   white-space: nowrap;
   display: flex;
   flex-direction: row;
@@ -28,15 +28,18 @@ body {
     font-size: 28px;
     margin: 0.5rem 0.5rem;
   }
+
   &__buttons {
     &__reg {
       background: blue;
       color: #fff;
     }
+
     &__log {
       background: blueviolet;
       color: #fff;
     }
+
     &__logout {
       background: crimson;
       color: #fff;
@@ -57,12 +60,14 @@ body {
   -o-transition: scale 0.5s, filter 0.5s;
   -webkit-transition: scale 0.5s, filter 0.5s;
   -moz-transition: scale 0.5s, filter 0.5s;
+
   &:hover {
     scale: 1.03;
     cursor: pointer;
     filter: brightness(1.1);
     -webkit-filter: brightness(1.1);
   }
+
   &:active {
     scale: 0.9;
     filter: brightness(0.9);

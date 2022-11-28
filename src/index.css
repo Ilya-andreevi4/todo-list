@@ -12,7 +12,7 @@ body {
   min-width: max-content;
   width: 100%;
   height: max-content;
-  background: #eee;
+  background: #fff;
   white-space: nowrap;
   display: flex;
   flex-direction: row;

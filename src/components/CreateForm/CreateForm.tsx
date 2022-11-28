@@ -1,12 +1,11 @@
 import { db } from "../../firebase";
-import { addDoc, collection, doc, getDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { auth, storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import ITodo from "models/ITodo";
 import { useState } from "react";
 import dayjs from "dayjs";
 import "./create-form.less";
-import { v4 as uuid } from "uuid";
 import { useAppContext } from "services/providers/AuthProvider";
 
 export default function CreateForm() {
@@ -57,8 +56,6 @@ export default function CreateForm() {
               isCompliete: false,
             };
 
-            // With collection:
-
             const userDoc = collection(
               db,
               "users/" + (auth.currentUser ? auth.currentUser.uid : "test"),
@@ -67,15 +64,6 @@ export default function CreateForm() {
             await addDoc(userDoc, newTodo).catch((error) => {
               console.error("Error with upload todo " + error);
             });
-
-            // With document:
-
-            // const userDoc = doc(db, "users/", user ? user.uid : "test");
-            // await updateDoc(userDoc, {
-            //   todos: arrayUnion(newTodo),
-            // }).catch((error) => {
-            //   console.error("Error with upload todo " + error);
-            // });
           });
         }
       );
@@ -89,8 +77,6 @@ export default function CreateForm() {
         isCompliete: false,
       };
 
-      // With collection:
-
       const userDoc = collection(
         db,
         "users/" + (user ? user.uid : "test"),
@@ -99,16 +85,6 @@ export default function CreateForm() {
       await addDoc(userDoc, newTodo).catch((error) => {
         console.error("Error with upload todo " + error);
       });
-
-      // With document:
-
-      // const userDoc = doc(db, "users/", user ? user.uid : "test");
-      // console.log("загрузка началась");
-      // await updateDoc(userDoc, {
-      //   todos: arrayUnion(newTodo),
-      // }).catch((error) => {
-      //   console.error("Error with upload todo " + error);
-      // });
     }
   };
 

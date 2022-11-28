@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import { useAppContext } from "../../services/providers/AuthProvider";
 import { db } from "../../firebase";
 
@@ -53,8 +46,6 @@ export default function Todo(todo: any) {
     setIsCompliete(currentTodo.isCompliete);
     const currentDate = new Date().getTime();
     const complieteDate = new Date(date).getTime();
-    console.log(currentDate, complieteDate);
-
     if (date && complieteDate < currentDate) {
       setIsCompliete(true);
       const docRef = doc(db, "users/" + user.uid + "/todos", todoId);
@@ -63,6 +54,7 @@ export default function Todo(todo: any) {
         .catch((e) => console.error(e.message));
     }
   }, []);
+
   useEffect(() => {
     if (
       title === currentTodo.title &&
@@ -125,7 +117,10 @@ export default function Todo(todo: any) {
           onClick={() => handleDelete()}
         ></button>
         <button
-          className="todo-list__button buttons"
+          className={
+            "buttons todo-list__button " +
+            (isCompliete && "todo-list__button__complieted")
+          }
           onClick={() => setIsCompliete(!isCompliete)}
         ></button>
 

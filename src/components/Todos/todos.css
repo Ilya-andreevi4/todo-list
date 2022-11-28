@@ -92,17 +92,24 @@
 }
 .todo-list__button {
   appearance: none;
-  background: orange;
+  background: #ff8614;
   border: 3px solid purple !important;
   margin-bottom: 1rem;
   height: 40px;
   width: 40px;
+}
+.todo-list__button__complieted {
+  background-image: url("../../assets/dot.png");
+  color: #fff;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 .todo-list__change-button {
   appearance: none;
   background-image: url("../../assets/pngwing.png");
   background-size: contain;
   background-color: greenyellow;
+  background-repeat: no-repeat;
   border: 3px solid purple !important;
   height: 40px;
   width: 40px;
@@ -111,6 +118,7 @@
   appearance: none;
   background-image: url("../../assets/remove.png");
   background-size: contain;
+  background-repeat: no-repeat;
   border: 3px solid crimson !important;
   height: 38px;
   width: 38px;
