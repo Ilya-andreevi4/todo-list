@@ -1,5 +1,4 @@
 export default interface ITodo {
-  id: string;
   title: string;
   description: string;
   createDate: any;

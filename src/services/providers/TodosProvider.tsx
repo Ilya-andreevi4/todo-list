@@ -3,10 +3,10 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { IUser } from "../../models/IUser";
 import { auth } from "../../firebase";
 
-export const appContext = createContext({} as any);
+export const TodosContext = createContext({} as any);
 
-export function AppContextProvider({ children }: any) {
-  const [user, setUser] = useState<IUser | null>(null);
+export function TodosContextProvider({ children }: any) {
+  const [todos, setTodos] = useState<any>(null);
 
   const logOut = async () => {
     return await signOut(auth).catch((e) =>
@@ -16,7 +16,7 @@ export function AppContextProvider({ children }: any) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+      setTodos(user);
     });
     return () => {
       unsubscribe();
@@ -26,14 +26,16 @@ export function AppContextProvider({ children }: any) {
   const values = useMemo(
     () => ({
       logOut,
-      user,
+      todos,
     }),
-    [user]
+    [todos]
   );
 
-  return <appContext.Provider value={values}>{children}</appContext.Provider>;
+  return (
+    <TodosContext.Provider value={values}>{children}</TodosContext.Provider>
+  );
 }
 
-export function useAppContext() {
-  return useContext(appContext);
+export function useTodosContext() {
+  return useContext(TodosContext);
 }

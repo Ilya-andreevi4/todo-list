@@ -1,5 +1,5 @@
 import { db } from "../../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { auth, storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import ITodo from "models/ITodo";
@@ -12,7 +12,7 @@ import { useAppContext } from "services/providers/AuthProvider";
 export default function CreateForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState<any>(null);
+  const [file, setFile] = useState<any>("");
   const [date, setDate] = useState("");
   const { user } = useAppContext();
 
@@ -22,96 +22,94 @@ export default function CreateForm() {
     const userUid =
       (user ? user.uid : "test") +
       dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss");
-    // if (file) {
-    //   const storageRef = ref(storage, userUid);
+    if (file) {
+      const storageRef = ref(storage, userUid);
 
-    //   const uploadTask = uploadBytesResumable(storageRef, file);
-    //   uploadTask.on(
-    //     "state_changed",
-    //     (snapshot) => {
-    //       const progress =
-    //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //       console.log("Upload is " + progress + "% done");
-    //       switch (snapshot.state) {
-    //         case "paused":
-    //           console.log("Upload is paused");
-    //           break;
-    //         case "running":
-    //           console.log("Upload is running");
-    //           break;
-    //       }
-    //     },
-    //     (error) => {
-    //       console.error(error);
-    //     },
-    //     () => {
-    //       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-    //         console.log("загрузка файла завершилась");
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          console.error(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            console.log("загрузка файла завершилась");
 
-    //         const newTodo: ITodo = {
-    //           id: uuid(),
-    //           title,
-    //           description,
-    //           complieteDate: date,
-    //           files: downloadURL,
-    //           createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
-    //           isCompliete: false,
-    //         };
+            const newTodo: ITodo = {
+              title,
+              description,
+              complieteDate: date,
+              files: downloadURL,
+              createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
+              isCompliete: false,
+            };
 
-    //         // With collection:
+            // With collection:
 
-    //         const userDoc = collection(
-    //           db,
-    //           "users/" +
-    //             (auth.currentUser ? auth.currentUser.uid : "test") +
-    //             "/todos"
-    //         );
-    //         await addDoc(userDoc, newTodo).catch((error) => {
-    //           console.error("Error with upload todo " + error);
-    //         });
+            const userDoc = collection(
+              db,
+              "users/" + (auth.currentUser ? auth.currentUser.uid : "test"),
+              "todos"
+            );
+            await addDoc(userDoc, newTodo).catch((error) => {
+              console.error("Error with upload todo " + error);
+            });
 
-    //         // With document:
+            // With document:
 
-    //         // const userDoc = doc(db, "users/", user ? user.uid : "test");
-    //         // await updateDoc(userDoc, {
-    //         //   todos: arrayUnion(newTodo),
-    //         // }).catch((error) => {
-    //         //   console.error("Error with upload todo " + error);
-    //         // });
-    //       });
-    //     }
-    //   );
-    // } else {
-    const newTodo: ITodo = {
-      id: uuid(),
-      title,
-      description,
-      complieteDate: date,
-      files: file,
-      createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
-      isCompliete: false,
-    };
+            // const userDoc = doc(db, "users/", user ? user.uid : "test");
+            // await updateDoc(userDoc, {
+            //   todos: arrayUnion(newTodo),
+            // }).catch((error) => {
+            //   console.error("Error with upload todo " + error);
+            // });
+          });
+        }
+      );
+    } else {
+      const newTodo: ITodo = {
+        title,
+        description,
+        complieteDate: date,
+        files: file,
+        createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
+        isCompliete: false,
+      };
 
-    // With collection:
+      // With collection:
 
-    const userDoc = collection(
-      db,
-      "users/" + (auth.currentUser ? auth.currentUser.uid : "test") + "/todos"
-    );
-    await addDoc(userDoc, newTodo).catch((error) => {
-      console.error("Error with upload todo " + error);
-    });
+      const userDoc = collection(
+        db,
+        "users/" + (user ? user.uid : "test"),
+        "todos"
+      );
+      await addDoc(userDoc, newTodo).catch((error) => {
+        console.error("Error with upload todo " + error);
+      });
 
-    // With document:
+      // With document:
 
-    // const userDoc = doc(db, "users/", user ? user.uid : "test");
-    // console.log("загрузка началась");
-    // await updateDoc(userDoc, {
-    //   todos: arrayUnion(newTodo),
-    // }).catch((error) => {
-    //   console.error("Error with upload todo " + error);
-    // });
-    // }
+      // const userDoc = doc(db, "users/", user ? user.uid : "test");
+      // console.log("загрузка началась");
+      // await updateDoc(userDoc, {
+      //   todos: arrayUnion(newTodo),
+      // }).catch((error) => {
+      //   console.error("Error with upload todo " + error);
+      // });
+    }
   };
 
   return (
