@@ -5,6 +5,7 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { useAppContext } from "../../services/providers/AuthProvider";
@@ -23,13 +24,6 @@ export default function Todo(todo: any) {
   const [isChangeButton, setIsChangeButton] = useState(false);
 
   const handleChange = async () => {
-    const checkDate = () => {
-      const currentDate = dayjs(new Date()).format("YYYY_MM_DDThh:mm:ss");
-      if (date && date < currentDate) {
-        setIsCompliete(true);
-      }
-    };
-    checkDate();
     const newTodo = {
       title,
       description,
@@ -57,6 +51,17 @@ export default function Todo(todo: any) {
     setFile(currentTodo.files);
     setDate(currentTodo.complieteDate);
     setIsCompliete(currentTodo.isCompliete);
+    const currentDate = new Date().getTime();
+    const complieteDate = new Date(date).getTime();
+    console.log(currentDate, complieteDate);
+
+    if (date && complieteDate < currentDate) {
+      setIsCompliete(true);
+      const docRef = doc(db, "users/" + user.uid + "/todos", todoId);
+      setDoc(docRef, { ...currentTodo, isCompliete })
+        .then(() => console.log("todo успешно изменена!"))
+        .catch((e) => console.error(e.message));
+    }
   }, []);
   useEffect(() => {
     if (
