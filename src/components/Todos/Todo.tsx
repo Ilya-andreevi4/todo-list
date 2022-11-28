@@ -25,7 +25,7 @@ export default function Todo(todo: any) {
   const handleChange = async () => {
     const checkDate = () => {
       const currentDate = dayjs(new Date()).format("YYYY_MM_DDThh:mm:ss");
-      if (date < currentDate) {
+      if (date && date < currentDate) {
         setIsCompliete(true);
       }
     };
