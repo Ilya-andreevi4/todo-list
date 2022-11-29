@@ -1,10 +1,9 @@
 import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import { useAuthContext } from "../../services/providers/AuthProvider";
 import { useEffect, useState } from "react";
-import { db, storage } from "../../firebase";
+import { auth, db, storage } from "../../firebase";
 import dayjs from "dayjs";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { spawn } from "child_process";
 
 export default function Todo(todo: any) {
   const { user } = useAuthContext();
@@ -143,7 +142,7 @@ export default function Todo(todo: any) {
   const handleDelete = async () => {
     const docRef = doc(
       db,
-      "users/" + (user ? user.uid : "test") + "/todos",
+      "users/" + (auth.currentUser ? auth.currentUser.uid : "test") + "/todos",
       todoId
     );
     await deleteDoc(docRef)
@@ -153,7 +152,7 @@ export default function Todo(todo: any) {
 
   useEffect(() => {
     updateStates();
-  }, []);
+  }, [auth.currentUser]);
 
   useEffect(() => {
     if (
@@ -197,24 +196,21 @@ export default function Todo(todo: any) {
         value={date}
       />
 
-      <div className="todo-list__container-file-input">
-        <input
-          type="file"
-          id={todo.id}
-          className="todo-list__file-input "
-          aria-label="Файл"
-          onChange={(e) => {
-            e.target.files && setFile(e.target.files[0]);
-          }}
-        />
-        <label htmlFor={todo.id} className="todo-list__label">
-          {file === currentTodo.files && (
-            <img src={file} alt={file} className="todo-list__files" />
-          )}
-          {file && file !== currentTodo.files && <span>Файл выбран</span>}
-          {!file && <span>Выбрать файл</span>}
-        </label>
-      </div>
+      <input
+        type="file"
+        id={todo.id}
+        className={file ? "display-none" : "todo-list__file-input input"}
+        aria-label="Файл"
+        onChange={(e) => {
+          e.target.files && setFile(e.target.files[0]);
+        }}
+      />
+      <label htmlFor={todo.id} className="todo-list__label">
+        {file === currentTodo.files && (
+          <img src={file} alt={file} className="todo-list__files" />
+        )}{" "}
+        {file && file !== currentTodo.files && <span>Файл выбран</span>}
+      </label>
 
       <div className="todo-list__button-container">
         <button
