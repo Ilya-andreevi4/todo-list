@@ -128,7 +128,6 @@ export default function Todo(todo: any) {
             const userDoc = doc(
               db,
               "users/" + (user ? user.uid : "test") + "/todos",
-              // )
               todoId
             );
 
