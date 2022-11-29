@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import { db } from "../../firebase";
 import Todo from "./Todo";
 import { useAuthContext } from "services/providers/AuthProvider";
 
@@ -28,7 +28,7 @@ export default function Todos() {
       <ul className="todo-list">
         {todos &&
           todos.map((t: any, idx: number) => (
-            <li key={idx} className="todo-list__todo">
+            <li key={idx}>
               <Todo todo={t} />
             </li>
           ))}

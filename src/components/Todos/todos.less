@@ -17,10 +17,9 @@
     background: white;
     box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.2);
     color: darkblue;
-    word-wrap: break-word;
     display: grid;
     flex-direction: column;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     grid-auto-rows: 60px;
     transition: box-shadow 0.5s;
 
@@ -42,7 +41,7 @@
     margin-top: 0.5rem;
     height: max-content;
     font-size: 30px;
-    grid-column: 1 / 4;
+    grid-column: 1 / 5;
     grid-row: 1 / 1;
     padding-left: 1rem;
 
@@ -58,7 +57,7 @@
     font-size: 20px;
     height: max-content;
     padding-left: 1rem;
-    grid-column: 1 / 4;
+    grid-column: 1 / 5;
     grid-row: 2 / 2;
     font-weight: 600;
 
@@ -74,7 +73,7 @@
     border-radius: 5px;
     font-size: 16px;
     height: min-content;
-    grid-column: 1 / 4;
+    grid-column: 1 / 6;
     grid-row: 3 / 3;
     opacity: 0.7;
     padding-left: 1rem;
@@ -96,8 +95,8 @@
     border-radius: 8px;
     width: 100%;
     margin: auto;
-    grid-column: 4 / 5;
-    grid-row: 2 / 3;
+    grid-column: 6 / 6;
+    grid-row: 1 / 3;
   }
 
   &__label {
@@ -108,7 +107,7 @@
     margin: auto;
     gap: 10px;
     font-size: 18px;
-    grid-column: 4 / 5;
+    grid-column: 6 / 6;
     grid-row: 1 / 3;
     &:hover {
       cursor: pointer;

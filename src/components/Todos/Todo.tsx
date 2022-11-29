@@ -1,11 +1,11 @@
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { useAuthContext } from "../../services/providers/AuthProvider";
 import { useEffect, useState } from "react";
-import { auth, db, storage } from "../../firebase";
+import { db, storage } from "../../firebase";
 import dayjs from "dayjs";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-export default function Todo(todo: any) {
+export default function Todo(todo: any, idx: number) {
   const { user } = useAuthContext();
 
   // Id задачи для её дальнейшего редактирования и удаления
@@ -34,8 +34,8 @@ export default function Todo(todo: any) {
 
     // И проверяем не истёк ли дедлайн у задачи
     const currentDate = new Date().getTime();
-    const complieteDate = new Date(date).getTime();
-    if (date && complieteDate < currentDate) {
+    const complieteDate = date && new Date(date).getTime();
+    if (date && complieteDate < currentDate && !isCompliete) {
       setIsCompliete(true);
       updateDoc(docRef, { isCompliete })
         .then(() => console.log("todo успешно изменён!"))
@@ -57,10 +57,10 @@ export default function Todo(todo: any) {
       await updateDoc(docRef, newTodo)
         .then(() => {
           console.log("todo успешно изменён!");
-          updateStates();
+          // updateStates();
         })
         .catch((e) => console.error(e.message));
-    } else if (file) {
+    } else if (file && file !== currentTodo.files) {
       //Создаём уникальный путь для отправки файла в хранилище
       const pathId =
         (user ? user.uid : "test") +
@@ -120,7 +120,7 @@ export default function Todo(todo: any) {
               isCompliete: isCompliete,
             };
             await updateDoc(docRef, newTodo)
-              .then(() => updateStates())
+              // .then(() => updateStates())
               .catch((error) => {
                 console.error("Error with upload todo " + error);
               });
@@ -159,7 +159,7 @@ export default function Todo(todo: any) {
   }, [title, description, file, date, currentTodo, isCompliete]);
 
   return (
-    <>
+    <div key={idx} className="todo-list__todo">
       <input
         type="text"
         className={
@@ -187,14 +187,14 @@ export default function Todo(todo: any) {
 
       <input
         type="file"
-        id={todo.id}
+        id={todoId}
         className={file ? "display-none" : "todo-list__file-input input"}
         aria-label="Файл"
         onChange={(e) => {
           e.target.files && setFile(e.target.files[0]);
         }}
       />
-      <label htmlFor={todo.id} className="todo-list__label">
+      <label htmlFor={todoId} className="todo-list__label">
         {file === currentTodo.files && (
           <img src={file} alt={file} className="todo-list__files" />
         )}{" "}
@@ -223,6 +223,6 @@ export default function Todo(todo: any) {
           onClick={() => handleChange()}
         />
       </div>
-    </>
+    </div>
   );
 }
