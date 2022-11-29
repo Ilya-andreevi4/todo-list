@@ -1,4 +1,4 @@
-import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
@@ -19,8 +19,8 @@ export default app;
 
 // Попытка пофиксить ошибку с соединением, при отправки todo на сервер:
 // @firebase/firestore: Firestore (9.14.0): Connection WebChannel transport errored
-export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-  cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-});
-// export const db = getFirestore(app);
+// export const db = initializeFirestore(app, {
+//   experimentalForceLongPolling: true,
+//   cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+// });
+export const db = getFirestore(app);

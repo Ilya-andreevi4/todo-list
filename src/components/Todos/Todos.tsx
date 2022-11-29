@@ -1,5 +1,5 @@
 import { useAuthContext } from "services/providers/AuthProvider";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import React from "react";
@@ -10,20 +10,20 @@ export default function Todos() {
   const { user } = useAuthContext();
 
   useEffect(() => {
-    //Подписываемся на изменения в базе задач
-    const unsubscribe = onSnapshot(
+    const q = query(
       collection(db, "users/" + (user ? user.uid : "test"), "todos"),
-      (doc) => {
-        const userDoc = doc.docs;
-        const userTodos = userDoc && userDoc;
-        setTodos(userTodos);
-      }
+      orderBy("createDate")
     );
+    //Подписываемся на изменения в базе задач
+    const unsubscribe = onSnapshot(q, (doc) => {
+      const userDoc = doc.docs;
+      const userTodos = userDoc && userDoc;
+      setTodos(userTodos);
+    });
     return () => {
       unsubscribe();
     };
   }, [user]);
-
   return (
     <>
       <ul className="todo-list">

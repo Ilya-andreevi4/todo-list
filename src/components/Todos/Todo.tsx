@@ -5,11 +5,12 @@ import { db, storage } from "../../firebase";
 import dayjs from "dayjs";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-export default function Todo(todo: any, idx: number) {
+export default function Todo(todo: any) {
   const { user } = useAuthContext();
 
   // Id задачи для её дальнейшего редактирования и удаления
   const todoId = todo.todo._document.key.path.segments[8];
+  console.log(todoId);
 
   const currentTodo = todo.todo.data();
   const [title, setTitle] = useState("");
@@ -18,11 +19,6 @@ export default function Todo(todo: any, idx: number) {
   const [date, setDate] = useState("");
   const [isCompliete, setIsCompliete] = useState(false);
   const [isChangeButton, setIsChangeButton] = useState(false);
-  const docRef = doc(
-    db,
-    "users/" + (user ? user.uid : "test") + "/todos",
-    todoId
-  );
 
   const updateStates = () => {
     // Заносим в стейты актуальную информацию
@@ -37,6 +33,11 @@ export default function Todo(todo: any, idx: number) {
     const complieteDate = date && new Date(date).getTime();
     if (date && complieteDate < currentDate && !isCompliete) {
       setIsCompliete(true);
+      const docRef = doc(
+        db,
+        "users/" + (user ? user.uid : "test") + "/todos",
+        todoId
+      );
       updateDoc(docRef, { isCompliete })
         .then(() => console.log("todo успешно изменён!"))
         .catch((e) => console.error(e.message));
@@ -53,6 +54,11 @@ export default function Todo(todo: any, idx: number) {
         files: file,
         isCompliete: isCompliete,
       };
+      const docRef = doc(
+        db,
+        "users/" + (user ? user.uid : "test") + "/todos",
+        todoId
+      );
 
       await updateDoc(docRef, newTodo)
         .then(() => {
@@ -119,6 +125,11 @@ export default function Todo(todo: any, idx: number) {
               files: downloadURL,
               isCompliete: isCompliete,
             };
+            const docRef = doc(
+              db,
+              "users/" + (user ? user.uid : "test") + "/todos",
+              todoId
+            );
             await updateDoc(docRef, newTodo)
               // .then(() => updateStates())
               .catch((error) => {
@@ -131,10 +142,14 @@ export default function Todo(todo: any, idx: number) {
   };
 
   const handleDelete = async () => {
+    const docRef = doc(
+      db,
+      "users/" + (user ? user.uid : "test") + "/todos",
+      todoId
+    );
     await deleteDoc(docRef)
       .then(() => {
         console.log("todo успешно удален!");
-        updateStates();
       })
       .catch((e) => console.error(e.message));
   };
@@ -159,7 +174,7 @@ export default function Todo(todo: any, idx: number) {
   }, [title, description, file, date, currentTodo, isCompliete]);
 
   return (
-    <div key={idx} className="todo-list__todo">
+    <div className="todo-list__todo">
       <input
         type="text"
         className={
