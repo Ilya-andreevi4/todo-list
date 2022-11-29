@@ -18,6 +18,11 @@ export default function Todo(todo: any) {
   const [date, setDate] = useState("");
   const [isCompliete, setIsCompliete] = useState(false);
   const [isChangeButton, setIsChangeButton] = useState(false);
+  const docRef = doc(
+    db,
+    "users/" + (user ? user.uid : "test") + "/todos",
+    todoId
+  );
 
   const updateStates = () => {
     // Заносим в стейты актуальную информацию
@@ -32,11 +37,6 @@ export default function Todo(todo: any) {
     const complieteDate = new Date(date).getTime();
     if (date && complieteDate < currentDate) {
       setIsCompliete(true);
-      const docRef = doc(
-        db,
-        "users/" + (user ? user.uid : "test") + "/todos",
-        todoId
-      );
       updateDoc(docRef, { isCompliete })
         .then(() => console.log("todo успешно изменён!"))
         .catch((e) => console.error(e.message));
@@ -53,11 +53,7 @@ export default function Todo(todo: any) {
         files: file,
         isCompliete: isCompliete,
       };
-      const docRef = doc(
-        db,
-        "users/" + (user ? user.uid : "test") + "/todos",
-        todoId
-      );
+
       await updateDoc(docRef, newTodo)
         .then(() => console.log("todo успешно изменён!"))
         .catch((e) => console.error(e.message));
@@ -124,15 +120,7 @@ export default function Todo(todo: any) {
             };
             setFile(downloadURL);
 
-            const userDoc = doc(
-              db,
-              "users/" +
-                (auth.currentUser ? auth.currentUser.uid : "test") +
-                "/todos",
-              todoId
-            );
-
-            await updateDoc(userDoc, newTodo).catch((error) => {
+            await updateDoc(docRef, newTodo).catch((error) => {
               console.error("Error with upload todo " + error);
             });
           });
@@ -142,11 +130,6 @@ export default function Todo(todo: any) {
   };
 
   const handleDelete = async () => {
-    const docRef = doc(
-      db,
-      "users/" + (user ? user.uid : "test") + "/todos",
-      todoId
-    );
     await deleteDoc(docRef)
       .then(() => console.log("todo успешно удален!"))
       .catch((e) => console.error(e.message));
@@ -154,7 +137,7 @@ export default function Todo(todo: any) {
 
   useEffect(() => {
     updateStates();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (
