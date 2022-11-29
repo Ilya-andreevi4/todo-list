@@ -2,10 +2,12 @@ import EntryForm from "./components/EntryForm/EntryForm";
 import { useState } from "react";
 import CreateForm from "./components/CreateForm/CreateForm";
 import Todos from "./components/Todos/Todos";
-import { useAppContext } from "./services/providers/AuthProvider";
+import { useAuthContext } from "./services/providers/AuthProvider";
 
 function App() {
-  const { user, logOut } = useAppContext();
+  const { user, logOut } = useAuthContext();
+
+  // Окно для регистрации или входа в аккаунт
   const [openEntryForm, setOpenEntryForm] = useState(false);
   const [typeEntry, setTypeEntry] = useState("");
 

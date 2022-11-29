@@ -1,6 +1,6 @@
 .form {
   display: grid;
-  grid-template-columns: repeat(1, 0.9fr);
+  grid-template-columns: repeat(1, 0.8fr);
   justify-content: center;
   width: 100%;
   background: rgb(114, 26, 197);
@@ -22,32 +22,40 @@
     border: none;
   }
   &__date {
-    height: 32px;
+    height: 28px;
     max-width: 300px;
     padding: 0.5rem 1rem;
   }
   &__button {
     appearance: none;
     min-height: 36px;
-    line-height: 2.5rem;
+    line-height: 2rem;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 400;
     letter-spacing: 2px;
     background: rgb(255, 134, 20);
     color: #fff;
     border: none;
     border-radius: 8px;
   }
+
+  &__file-input {
+    display: none;
+  }
 }
 .input {
   appearance: none;
-  line-height: 2.5rem;
-  margin-bottom: 1rem;
+  line-height: 2rem;
+  margin-bottom: 0.5rem;
   font-size: 20px;
   background: white;
   border: none;
   border-radius: 8px;
   width: 100%;
+
+  &:hover {
+    cursor: pointer;
+  }
   &__label {
     background: rgb(114, 39, 183);
     width: max-content;
@@ -56,9 +64,13 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    font-size: large;
+    font-size: 18px;
     img {
       height: 60px;
+    }
+
+    &:hover {
+      cursor: pointer;
     }
   }
 }

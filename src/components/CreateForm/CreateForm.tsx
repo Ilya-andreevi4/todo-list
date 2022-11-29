@@ -1,30 +1,53 @@
 import { db } from "../../firebase";
-import { addDoc, collection } from "firebase/firestore";
-import { auth, storage } from "../../firebase";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import ITodo from "models/ITodo";
 import { useState } from "react";
 import dayjs from "dayjs";
 import "./create-form.less";
-import { useAppContext } from "services/providers/AuthProvider";
+import { useAuthContext } from "services/providers/AuthProvider";
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<any>("");
   const [date, setDate] = useState("");
-  const { user } = useAppContext();
+  const [docId, setDocId] = useState("");
+  const { user } = useAuthContext();
 
   const handleSubmit = async () => {
-    console.log("file: ");
-    console.log(file);
-    const userUid =
-      (user ? user.uid : "test") +
-      dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss");
-    if (file) {
-      const storageRef = ref(storage, userUid);
+    const newTodo: ITodo = {
+      title,
+      description,
+      complieteDate: date,
+      files: "",
+      createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
+      isCompliete: false,
+    };
 
+    const userDoc = collection(
+      db,
+      "users/" + (user ? user.uid : "test"),
+      "todos"
+    );
+
+    await addDoc(userDoc, newTodo)
+      .then((d) => setDocId(d.id))
+      .catch((error) => {
+        console.error("Error with upload todo " + error);
+      });
+    if (file) {
+      console.log(file);
+
+      //Создаём уникальный путь для отправки файла в хранилище
+      const pathId =
+        (user ? user.uid : "test") +
+        dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss");
+
+      const storageRef = ref(storage, pathId);
       const uploadTask = uploadBytesResumable(storageRef, file);
+
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -41,55 +64,53 @@ export default function CreateForm() {
           }
         },
         (error) => {
-          console.error(error);
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case "storage/unauthorized":
+              console.error("ne avtorizovan ", error.code);
+
+              break;
+            case "storage/canceled":
+              console.error("User canceled the upload ", error.code);
+              // User canceled the upload
+              break;
+
+            // ...
+
+            case "storage/unknown":
+              console.error(
+                "Unknown error occurred, inspect error.serverResponse ",
+                error.code
+              );
+
+              // Unknown error occurred, inspect error.serverResponse
+              break;
+          }
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            console.log("загрузка файла завершилась");
+            console.log("началась загрузка задачи...");
+            console.log("id doc: ", docId);
 
-            const newTodo: ITodo = {
-              title,
-              description,
-              complieteDate: date,
-              files: downloadURL,
-              createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
-              isCompliete: false,
-            };
-
-            const userDoc = collection(
+            const userDoc = doc(
               db,
-              "users/" + (auth.currentUser ? auth.currentUser.uid : "test"),
-              "todos"
+              "users/" + (user ? user.uid : "test") + "/todos",
+              // )
+              docId
             );
-            await addDoc(userDoc, newTodo).catch((error) => {
+
+            await updateDoc(userDoc, { files: downloadURL }).catch((error) => {
               console.error("Error with upload todo " + error);
             });
           });
         }
       );
-    } else {
-      const newTodo: ITodo = {
-        title,
-        description,
-        complieteDate: date,
-        files: file,
-        createDate: dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss"),
-        isCompliete: false,
-      };
-
-      const userDoc = collection(
-        db,
-        "users/" + (user ? user.uid : "test"),
-        "todos"
-      );
-      await addDoc(userDoc, newTodo).catch((error) => {
-        console.error("Error with upload todo " + error);
-      });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form">
+    <form onSubmit={async () => await handleSubmit()} className="form">
       <h2 className="form__title">Заголовок задачи</h2>
       <input
         type="text"
@@ -110,7 +131,7 @@ export default function CreateForm() {
       <input
         type="file"
         id="avatar"
-        className="entry-form__file-input input"
+        className="form__file-input input"
         aria-label="Файл"
         onChange={(e) => {
           e.target.files && setFile(e.target.files[0]);

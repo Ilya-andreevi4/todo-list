@@ -3,9 +3,9 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { IUser } from "../../models/IUser";
 import { auth } from "../../firebase";
 
-export const appContext = createContext({} as any);
+export const AuthContext = createContext({} as any);
 
-export function AppContextProvider({ children }: any) {
+export function AuthContextProvider({ children }: any) {
   const [user, setUser] = useState<IUser | null>(null);
 
   const logOut = async () => {
@@ -15,6 +15,7 @@ export function AppContextProvider({ children }: any) {
   };
 
   useEffect(() => {
+    //Подписываемся на изменение авторизации
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
@@ -31,9 +32,9 @@ export function AppContextProvider({ children }: any) {
     [user]
   );
 
-  return <appContext.Provider value={values}>{children}</appContext.Provider>;
+  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 }
 
-export function useAppContext() {
-  return useContext(appContext);
+export function useAuthContext() {
+  return useContext(AuthContext);
 }

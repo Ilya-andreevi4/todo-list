@@ -1,6 +1,6 @@
 .form {
   display: grid;
-  grid-template-columns: repeat(1, 0.9fr);
+  grid-template-columns: repeat(1, 0.8fr);
   justify-content: center;
   width: 100%;
   background: #721ac5;
@@ -23,31 +23,37 @@
   border: none;
 }
 .form__date {
-  height: 32px;
+  height: 28px;
   max-width: 300px;
   padding: 0.5rem 1rem;
 }
 .form__button {
   appearance: none;
   min-height: 36px;
-  line-height: 2.5rem;
+  line-height: 2rem;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 2px;
   background: #ff8614;
   color: #fff;
   border: none;
   border-radius: 8px;
 }
+.form__file-input {
+  display: none;
+}
 .input {
   appearance: none;
-  line-height: 2.5rem;
-  margin-bottom: 1rem;
+  line-height: 2rem;
+  margin-bottom: 0.5rem;
   font-size: 20px;
   background: white;
   border: none;
   border-radius: 8px;
   width: 100%;
+}
+.input:hover {
+  cursor: pointer;
 }
 .input__label {
   background: #7227b7;
@@ -57,8 +63,11 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  font-size: large;
+  font-size: 18px;
 }
 .input__label img {
   height: 60px;
+}
+.input__label:hover {
+  cursor: pointer;
 }

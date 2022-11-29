@@ -1,11 +1,10 @@
+import { auth } from "../../firebase";
 import { useState, FC } from "react";
 import "./entry-form.less";
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../../firebase";
 
 export interface EntryFormProps {
   open: boolean;
@@ -13,13 +12,14 @@ export interface EntryFormProps {
   type: string;
 }
 const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [err, setErr] = useState(false);
+  const isReg = type === "reg";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (type === "reg") {
+    if (isReg) {
       try {
         await createUserWithEmailAndPassword(auth, email, password)
           .then((credentials) => {
@@ -59,9 +59,7 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="entry-form__title">
-          {type === "reg"
-            ? "Создание нового аккаунта"
-            : "Вход в существующий аккаунт"}
+          {isReg ? "Создание нового аккаунта" : "Вход в существующий аккаунт"}
         </h2>
         <h2 className="entry-form__title">Электронная почта</h2>
         <input
@@ -82,7 +80,7 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
         <input
           className="entry-form__button buttons"
           type="submit"
-          value={type === "reg" ? "Создать аккаунт" : "Войти"}
+          value={isReg ? "Создать аккаунт" : "Войти"}
         ></input>
         {err && <h2>Что-то пошло не так...</h2>}
       </form>
