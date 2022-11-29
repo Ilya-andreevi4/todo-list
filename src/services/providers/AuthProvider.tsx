@@ -23,13 +23,16 @@ export function AuthContextProvider({ children }: any) {
     };
   }, []);
 
-  const values = useMemo(
-    () => ({
+  const values =
+    // useMemo(
+    //   () => (
+    {
       logOut,
       user,
-    }),
-    [user]
-  );
+    };
+  //   ),
+  //   [user]
+  // );
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 }
