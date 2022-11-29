@@ -1,4 +1,4 @@
-import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { useAuthContext } from "../../services/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import { auth, db, storage } from "../../firebase";

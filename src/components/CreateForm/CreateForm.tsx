@@ -110,7 +110,7 @@ export default function CreateForm() {
   };
 
   return (
-    <form onSubmit={async () => await handleSubmit()} className="form">
+    <form onSubmit={() => handleSubmit()} className="form">
       <h2 className="form__title">Заголовок задачи</h2>
       <input
         type="text"
