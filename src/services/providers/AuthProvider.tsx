@@ -1,12 +1,11 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
-import { IUser } from "../../models/IUser";
 import { auth } from "../../firebase";
 
 export const AuthContext = createContext({} as any);
 
 export function AuthContextProvider({ children }: any) {
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const logOut = async () => {
     return await signOut(auth).catch((e) =>

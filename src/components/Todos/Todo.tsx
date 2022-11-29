@@ -55,17 +55,19 @@ export default function Todo(todo: any) {
       };
 
       await updateDoc(docRef, newTodo)
-        .then(() => console.log("todo успешно изменён!"))
+        .then(() => {
+          console.log("todo успешно изменён!");
+          updateStates();
+        })
         .catch((e) => console.error(e.message));
     } else if (file) {
       //Создаём уникальный путь для отправки файла в хранилище
       const pathId =
         (user ? user.uid : "test") +
         dayjs(new Date()).format("DD_MM_YYYYThh_mm_ss");
-
       const storageRef = ref(storage, pathId);
-      const uploadTask = uploadBytesResumable(storageRef, file);
 
+      const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -86,7 +88,7 @@ export default function Todo(todo: any) {
           // https://firebase.google.com/docs/storage/web/handle-errors
           switch (error.code) {
             case "storage/unauthorized":
-              console.error("ne avtorizovan ", error.code);
+              console.error("unauthorized ", error.code);
 
               break;
             case "storage/canceled":
@@ -108,8 +110,7 @@ export default function Todo(todo: any) {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            console.log("началась загрузка задачи...");
-            console.log("id doc: ", todoId);
+            setFile(downloadURL);
             const newTodo = {
               title,
               description,
@@ -118,11 +119,11 @@ export default function Todo(todo: any) {
               files: downloadURL,
               isCompliete: isCompliete,
             };
-            setFile(downloadURL);
-
-            await updateDoc(docRef, newTodo).catch((error) => {
-              console.error("Error with upload todo " + error);
-            });
+            await updateDoc(docRef, newTodo)
+              .then(() => updateStates())
+              .catch((error) => {
+                console.error("Error with upload todo " + error);
+              });
           });
         }
       );
@@ -131,7 +132,10 @@ export default function Todo(todo: any) {
 
   const handleDelete = async () => {
     await deleteDoc(docRef)
-      .then(() => console.log("todo успешно удален!"))
+      .then(() => {
+        console.log("todo успешно удален!");
+        updateStates();
+      })
       .catch((e) => console.error(e.message));
   };
 

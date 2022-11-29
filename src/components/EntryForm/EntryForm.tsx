@@ -77,6 +77,7 @@ const EntryForm: FC<EntryFormProps> = ({ open, setOpen, type }) => {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
         />
+        <p className="entry-form__title">*Минимум 6 знаков</p>
         <input
           className="entry-form__button buttons"
           type="submit"
