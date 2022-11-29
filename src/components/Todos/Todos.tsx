@@ -2,18 +2,16 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import Todo from "./Todo";
+import { useAuthContext } from "services/providers/AuthProvider";
 
 export default function Todos() {
   const [todos, setTodos] = useState<any>(null);
+  const { user } = useAuthContext();
 
   useEffect(() => {
     //Подписываемся на изменения в базе задач
     const unsubscribe = onSnapshot(
-      collection(
-        db,
-        "users/" + (auth.currentUser ? auth.currentUser.uid : "test"),
-        "todos"
-      ),
+      collection(db, "users/" + (user ? user.uid : "test"), "todos"),
       (doc) => {
         const userDoc = doc.docs;
         const userTodos = userDoc && userDoc;
@@ -23,7 +21,7 @@ export default function Todos() {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [user]);
 
   return (
     <>

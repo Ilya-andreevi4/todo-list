@@ -126,7 +126,9 @@ export default function Todo(todo: any) {
 
             const userDoc = doc(
               db,
-              "users/" + (user ? user.uid : "test") + "/todos",
+              "users/" +
+                (auth.currentUser ? auth.currentUser.uid : "test") +
+                "/todos",
               todoId
             );
 
@@ -142,7 +144,7 @@ export default function Todo(todo: any) {
   const handleDelete = async () => {
     const docRef = doc(
       db,
-      "users/" + (auth.currentUser ? auth.currentUser.uid : "test") + "/todos",
+      "users/" + (user ? user.uid : "test") + "/todos",
       todoId
     );
     await deleteDoc(docRef)
@@ -152,7 +154,7 @@ export default function Todo(todo: any) {
 
   useEffect(() => {
     updateStates();
-  }, [auth.currentUser]);
+  }, [user]);
 
   useEffect(() => {
     if (

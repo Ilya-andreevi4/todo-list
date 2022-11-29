@@ -37,6 +37,8 @@ export default function CreateForm() {
       .catch((error) => {
         console.error("Error with upload todo " + error);
       });
+    // Проблемы при создании задачи с файлом,
+    // поэтому пробуем загружать файл отдельно
     if (file) {
       console.log(file);
 
